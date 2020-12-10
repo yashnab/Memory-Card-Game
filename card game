@@ -1,0 +1,78 @@
+#importing important modules
+import simplegui
+import random
+
+
+# helper function to initialize globals
+def new_game():
+    global deck, expose, state, card1, card2, currentcard, turns, text_label
+    deck=range(8)
+    deck.extend(range(8))
+    #print deck
+    random.shuffle(deck) 
+    expose=[]
+    for lc in range(len(deck)):
+        expose.append(False)
+    state = 0
+    card1 = 0
+    card2 = 0
+    currentcard = 0
+    turns = 0 
+    label.set_text("Turns = 0") # need that for restart game
+
+     
+# define event handlers
+def mouseclick(pos):
+    # add game state logic here
+    global expose, state, card1, card2, currentcard, turns
+    
+    click_pos=pos[0]//50
+    if expose[click_pos]==False:
+        card2=card1
+        card1=currentcard
+        currentcard=click_pos
+        
+        if state == 0:
+            state = 1
+            expose[click_pos] = True
+            card1=click_pos
+        elif state == 1:
+            state = 2
+            expose[click_pos] = True
+            card2=click_pos
+        else:
+            if deck[card1] != deck[card2]:
+                expose[card1] = False
+                expose[card2] = False
+            state = 1
+            expose[click_pos] = True
+            turns += 1
+            text_label = "Turns = " + str(turns)
+            label.set_text(text_label)
+            
+
+                        
+# cards are logically 50x100 pixels in size    
+def draw(canvas):
+    posx=0
+    i=0
+    for cards in deck:
+        canvas.draw_text(str(cards),(posx+10,70),70,"White")
+        if expose[i]==False:
+            canvas.draw_polygon([(posx,0),(posx + 50, 0),(posx + 50, 100),(posx, 100)], 1, "Red", "Green")
+        posx += 50
+        i +=1
+            
+            
+# create frame and add a button and labels
+frame = simplegui.create_frame("Memory", 800, 100)
+frame.add_button("Reset", new_game)
+label = frame.add_label("Turns = 0")
+
+# register event handlers
+frame.set_mouseclick_handler(mouseclick)
+frame.set_draw_handler(draw)
+
+# get things rolling
+new_game()
+frame.start()
