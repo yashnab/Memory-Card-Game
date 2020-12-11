@@ -1,1 +1,1 @@
-# Memory-Card-Game
+It is an interactive card game using simplegui and python. In this all the cards are laid facing downwards, two cards are flipped facing upwards at a time. Finish the game by turning over all the matching pairs. Happy Playing!
